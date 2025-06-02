@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoBank - Online Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f4c3a 0%, #1a6b52 50%, #0f4c3a 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            padding: 50px;
+            max-width: 450px;
+            margin: 60px auto;
+            border-top: 5px solid #e31e24;
+        }
+
+        .ecobank-logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .ecobank-logo h1 {
+            color: #0f4c3a;
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .ecobank-logo .tagline {
+            color: #e31e24;
+            font-size: 0.9em;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 18px;
+            margin: 12px 0;
+            border: 2px solid #0c5195c9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #0f4c3a;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0f4c3a, #1a6b52);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(15,76,58,0.3);
+        }
+
+        .dashboard {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            overflow: hidden;
+            border-top: 5px solid #e31e24;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f4c3a, #1a6b52);
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header h2 {
+            font-size: 1.8em;
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .timestamp {
+            font-size: 0.9em;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .logout-btn {
+            background: #e31e24;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c41e22;
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom: 3px solid #0f4c3a;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e31e24, #ff4444);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .ecobank-logo-img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .profile-name {
+            font-size: 1.5em;
+            color: #0f4c3a;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .profile-title {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .balance-section {
+            padding: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #0f4c3a, #1a6b52);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .balance-label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .balance-amount {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-subtitle {
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .action-buttons {
+            padding: 40px;
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 20px 35px;
+            background: linear-gradient(135deg, #0f4c3a, #1a6b52);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(15,76,58,0.3);
+            min-width: 180px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(15,76,58,0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-top: 5px solid #e31e24;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-header h2 {
+            color: #0f4c3a;
+            font-size: 1.8em;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #1e2be3;
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #0f4c3a;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #0f4c3a;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: #f8f9fa;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-left {
+            flex: 1;
+        }
+
+        .transaction-desc {
+            font-weight: bold;
+            color: #0f4c3a;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #28a745;
+        }
+
+        .transaction-amount.negative {
+            color: #e31e24;
+        }
+
+        .account-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .detail-item {
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            border-left: 4px solid #0f4c3a;
+            transition: transform 0.3s;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.2em;
+            color: #0f4c3a;
+            font-weight: bold;
+        }
+
+        .alert {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+            border-left: 5px solid #e31e24;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .ecobank-footer {
+            text-align: center;
+            padding: 20px;
+            background: #0f4c3a;
+            color: white;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .account-details {
+                grid-template-columns: 1fr;
+            }
+
+            .balance-amount {
+                font-size: 2.5em;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container">
+            <div class="ecobank-logo">
+                <svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+                    <!-- EcoBank Ghana Logo -->
+                    <rect x="0" y="0" width="200" height="80" fill="#0f4c3a"/>
+                    
+                    <!-- Main EcoBank text -->
+                    <text x="20" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">Eco</text>
+                    <text x="65" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#e31e24">Bank</text>
+                    
+                    <!-- Ghana flag colors stripe -->
+                    <rect x="20" y="45" width="120" height="3" fill="#e31e24"/>
+                    <rect x="20" y="48" width="120" height="3" fill="#ffd700"/>
+                    <rect x="20" y="51" width="120" height="3" fill="#0f4c3a"/>
+                    
+                    <!-- Tagline -->
+                    <text x="20" y="65" font-family="Arial, sans-serif" font-size="9" fill="white">THE PAN-AFRICAN BANK</text>
+                    
+                    <!-- Ghana identifier -->
+                    <text x="145" y="30" font-family="Arial, sans-serif" font-size="12" fill="#ffd700"></text>
+                    
+                    <!-- Circular emblem -->
+                    <circle cx="165" cy="40" r="15" fill="none" stroke="#ffd700" stroke-width="2"/>
+                    <text x="165" y="45" font-family="Arial, sans-serif" font-size="8" fill="#ffd700" text-anchor="middle">GH</text>
+                </svg>
+                <p class="tagline">Online Banking Portal</p>
+            </div>
+            <form class="login-form" id="loginForm">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="login-btn">SIGN IN</button>
+            </form>
+            <div id="loginError" style="color: #e31e24; margin-top: 20px; text-align: center; display: none; font-weight: bold;">
+                Invalid username or password. Please try again.
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div class="header">
+                <h2>EcoBank Online Banking</h2>
+                <div class="header-right">
+                    <div class="timestamp" id="timestamp"></div>
+                    <button class="logout-btn" onclick="logout()">LOGOUT</button>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-pic">EG</div>
+                <div class="profile-name">Esther Effah Gyabea</div>
+                <div class="profile-title">Premier Banking Customer</div>
+            </div>
+
+            <div class="balance-section">
+                <div class="balance-label">Current Account Balance</div>
+                <div class="balance-amount">$150,023.09</div>
+                <div class="balance-subtitle">Available Balance</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="openTransferModal()">TRANSFER FUNDS</button>
+                <button class="action-btn" onclick="openTransactionModal()">TRANSACTIONS</button>
+                <button class="action-btn" onclick="openAccountDetailsModal()">ACCOUNT DETAILS</button>
+            </div>
+
+            <div class="ecobank-footer">
+                <p>&copy; 2025 EcoBank Group. All rights reserved. | The Pan-African Bank</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Transfer Funds</h2>
+                <span class="close" onclick="closeModal('transferModal')">&times;</span>
+            </div>
+            <form id="transferForm">
+                <div class="form-group">
+                    <label for="recipientName">Recipient Name:</label>
+                    <input type="text" id="recipientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount (USD):</label>
+                    <input type="number" id="amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Transfer Description:</label>
+                    <textarea id="description" rows="3" placeholder="Enter transfer details..."></textarea>
+                </div>
+                <button type="submit" class="action-btn" style="width: 100%; margin-top: 25px;">SEND TRANSFER</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Recent Transactions</h2>
+                <span class="close" onclick="closeModal('transactionModal')">&times;</span>
+            </div>
+            <div id="transactionList">
+                <div class="transaction-item">
+                    <div class="transaction-left">
+                        <div class="transaction-desc">Account Opening Deposit</div>
+                        <div class="transaction-date">June 02, 2025</div>
+                    </div>
+                    <div class="transaction-amount">+$150,023.09</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Details Modal -->
+    <div id="accountDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Account Information</h2>
+                <span class="close" onclick="closeModal('accountDetailsModal')">&times;</span>
+            </div>
+            <div class="account-details">
+                <div class="detail-item">
+                    <div class="detail-label">Account Holder</div>
+                    <div class="detail-value">Esther Effah Gyabea</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Account Number</div>
+                    <div class="detail-value">214497997748</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Routing Number</div>
+                    <div class="detail-value">ECOCGHCSY</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Address</div>
+                    <div class="detail-value">1801 Main St.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Country</div>
+                    <div class="detail-value">Ghana</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Region</div>
+                    <div class="detail-value">Bono Region/div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">City</div>
+                    <div class="detail-value">Sunyani </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Postal Code</div>
+                    <div class="detail-value">00233</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Alert Modal -->
+    <div id="transferAlertModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Account Activation Required</h2>
+                <span class="close" onclick="closeModal('transferAlertModal')">&times;</span>
+            </div>
+            <div class="alert">
+                <strong>Notice:</strong> Your account needs to be activated before making transfers. Contact your Bank on bullionvvault@gmail.com thank you.
+            </div>
+            <button class="action-btn" onclick="closeModal('transferAlertModal')" style="width: 100%; margin-top: 20px;">UNDERSTOOD</button>
+        </div>
+    </div>
+
+    <script>
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            };
+            document.getElementById('timestamp').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'esther0248' && password === 'esther1122') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                updateTimestamp();
+                setInterval(updateTimestamp, 1000);
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loginError').style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Logout functionality
+        function logout() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // Modal functions
+        function openTransferModal() {
+            document.getElementById('transferModal').style.display = 'block';
+        }
+
+        function openTransactionModal() {
+            document.getElementById('transactionModal').style.display = 'block';
+        }
+
+        function openAccountDetailsModal() {
+            document.getElementById('accountDetailsModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Transfer form submission
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            closeModal('transferModal');
+            document.getElementById('transferAlertModal').style.display = 'block';
+            
+            // Reset form
+            document.getElementById('transferForm').reset();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = ['transferModal', 'transactionModal', 'accountDetailsModal', 'transferAlertModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    closeModal(modalId);
+                }
+            });
+        }
+
+        // Initialize timestamp on page load
+        updateTimestamp();
+    </script>
+</body>
+</html>
